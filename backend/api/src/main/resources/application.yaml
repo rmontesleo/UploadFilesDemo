@@ -35,4 +35,4 @@ logging:
 
 allowOrigins: "*"
 
-filesPath: ""
+filesPath: "temp/"
