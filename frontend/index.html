@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" method="post" enctype="multipart/form-data">
+        <input placeholder="upload file" type="file" name="userFile" id="userFile" accept=".jpg, .png, .pdf" /><br>
+        <button type="button" id="uploadBtn" >Upload file</button>
+        <button type="button" id="uploadBase64Btn" >Upload file in Base 64</button>   
+        <button type="button" id="uploadBytesBtn" >Upload file in Bytes</button>
+        <button type="button" id="uploadByChunksBtn" >Upload file in Chunks</button>
+        <button type="button" id="joinChunksInFileBtn" >Join chunks in File</button>
+        <button type="button" id="changeBase64ToFile" >Change Base64 content to File</button>
+    </form>
+    <input type="hidden" name="hiddenStringBase64" id="hiddenStringBase64" />
+     
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>
