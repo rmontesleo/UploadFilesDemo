@@ -7,23 +7,38 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
 public class FileBuilder {
 
-    public static boolean buildFileFromBase64Content(String path, String fileName, String base64Content) {
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param base64Content
+     * @return
+     */
+    public static boolean buildFileFromBase64Content( final String path, final String fileName, final String base64Content) {
         String file = path.concat(fileName);
         try (FileWriter writer = new FileWriter(file);
                 BufferedWriter buffer = new BufferedWriter(writer)) {
-            buffer.write(base64Content);
+            buffer.write(base64Content);                       
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
-    public static boolean buildFileFromByteArray(String path, String fileName, byte[] byteArray) {
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param byteArray
+     * @return
+     */
+    public static boolean buildFileFromByteArray(final String path, final String fileName, final byte[] byteArray) {
         String file = path.concat(fileName);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(byteArray);
@@ -35,7 +50,14 @@ public class FileBuilder {
   
 
 
-    public static boolean joinChunksInFile(String path, String fileName, List<String> fileNameList ) {
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param fileNameList
+     * @return
+     */
+    public static boolean joinChunksInFile(final String path, final String fileName, final List<String> fileNameList ) {
 
         List<String> lines = new ArrayList<>();
         String currentFile = null;
@@ -56,12 +78,38 @@ public class FileBuilder {
             return false;
         }
 
-        return buildFileFromBase64Content(path, fileName, String.join("", lines));
+        return buildFileFromBase64Content( path, fileName, String.join("", lines) );
 
     }
 
+    
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param fileNameArray
+     * @return
+     */
+    public static boolean joinChunksArrayInFile(final String path, final String fileName, final String[] fileNameArray ) {
+        List<String> fileNameList = Arrays.asList(fileNameArray);
+        return joinChunksInFile( path,  fileName, fileNameList );
+    }
 
-    public static boolean changeBase64ToBytesFile( String path, String base64FileName, String bytesFileName){
+
+    public static boolean joinChunksStringInFile(final String path, final String fileName, final String concatenatedNames ) {
+        List<String> fileNameList =  Arrays.asList( concatenatedNames.split(",") );
+        return joinChunksInFile( path,  fileName, fileNameList );
+    }
+
+
+    /**
+     * 
+     * @param path
+     * @param base64FileName
+     * @param bytesFileName
+     * @return
+     */
+    public static boolean changeBase64ToBytesFile( final String path, final String base64FileName, final String bytesFileName){
         String base64File = path.concat(base64FileName);
         
         StringBuilder lines = new StringBuilder();
@@ -83,5 +131,9 @@ public class FileBuilder {
                                        byteArray
                                      );
     }
+
+
+
+  
 
 }

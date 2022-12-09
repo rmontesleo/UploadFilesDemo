@@ -65,6 +65,7 @@ https://www.baeldung.com/java-base64-encode-and-decode
 https://www.baeldung.com/java-collection-stream-foreach
 https://www.baeldung.com/java-break-stream-foreach
 https://www.baeldung.com/spring-mvc-static-resources
+https://www.baeldung.com/string/split
 
 https://stackoverflow.com/questions/599161/best-way-to-convert-an-arraylist-to-a-string
 https://www.geeksforgeeks.org/convert-byte-array-to-file-using-java/
@@ -97,4 +98,4 @@ https://junit.org/junit5/docs/current/user-guide/#overview-java-versions
 https://spring.io/guides/gs/serving-web-content/
 
 
-
+https://www.geeksforgeeks.org/split-string-java-examples/
