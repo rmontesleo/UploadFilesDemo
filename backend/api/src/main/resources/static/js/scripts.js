@@ -1,3 +1,11 @@
+/**
+ * 
+ * @param {*} url 
+ * @param {*} body 
+ * @param {*} method 
+ * @param {*} headers 
+ * @returns 
+ */
 async function sendData (   url, 
                             body = "", 
                             method = "POST",  
@@ -14,13 +22,23 @@ async function sendData (   url,
     }
 }
 
-
+/**
+ * 
+ * @param {*} fileElementId 
+ * @returns 
+ */
 function getSimpleFile(fileElementId) {
     const file = document.getElementById(fileElementId).files[0];  
     console.log(`the file is  ${file}` );
     return file;
 }
 
+/**
+ * 
+ * @param {*} fileElementId 
+ * @param {*} appendedFileName 
+ * @returns 
+ */
 function getFormData(fileElementId, appendedFileName) {
     const userFile = getSimpleFile(fileElementId);
     const formData = new FormData();
@@ -29,6 +47,11 @@ function getFormData(fileElementId, appendedFileName) {
 }
 
 
+/**
+ * 
+ * @param {*} file 
+ * @returns 
+ */
 async function getBytesFromFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -51,6 +74,11 @@ async function getBytesFromFile(file) {
     });
 }
 
+/**
+ * 
+ * @param {*} file 
+ * @returns 
+ */
 async function getBase64FromFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -65,6 +93,12 @@ async function getBase64FromFile(file) {
     });
 }
 
+/**
+ * 
+ * @param {*} file 
+ * @param {*} chunkSize 
+ * @returns 
+ */
 async function getChuncksFromBase64(file, chunkSize) {
     try {
         const stringBase64 = await getBase64FromFile(file);

@@ -22,8 +22,8 @@ public class FileBuilder {
      */
     public static boolean buildFileFromBase64Content( final String path, final String fileName, final String base64Content) {
         String file = path.concat(fileName);
-        try (FileWriter writer = new FileWriter(file);
-                BufferedWriter buffer = new BufferedWriter(writer)) {
+        try ( FileWriter writer = new FileWriter(file);
+                BufferedWriter buffer = new BufferedWriter(writer) ) {
             buffer.write(base64Content);                       
             return true;
         } catch (IOException e) {

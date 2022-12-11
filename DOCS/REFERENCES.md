@@ -44,6 +44,7 @@ https://onlinebase64tools.com/split-base64-into-chunks
 https://www.codegrepper.com/code-examples/javascript/how+to+chunk+a+base+64+in+javascript
 
 https://stackoverflow.com/questions/7033639/split-large-string-in-n-size-chunks-in-javascript
+https://stackoverflow.com/questions/9638361/how-can-i-pass-a-parameter-to-a-function-without-it-running-right-away
 
 ## Java File
 
@@ -54,6 +55,7 @@ https://mkyong.com/java8/java-8-foreach-examples/
 https://mkyong.com/java8/java-8-stream-iterate-examples/
 https://mkyong.com/java/how-do-convert-string-to-byte-in-java/
 https://mkyong.com/maven/how-to-create-a-java-project-with-maven/
+https://mkyong.com/java/how-to-create-directory-in-java/
 
 
 https://www.baeldung.com/java-base64-image-string
@@ -70,6 +72,7 @@ https://www.baeldung.com/string/split
 https://stackoverflow.com/questions/599161/best-way-to-convert-an-arraylist-to-a-string
 https://www.geeksforgeeks.org/convert-byte-array-to-file-using-java/
 https://www.digitalocean.com/community/tutorials/java-catch-multiple-exceptions-rethrow-exception
+https://www.folkstalk.com/tech/java-create-directory-if-not-exists-with-code-examples/
 
 
 ## Upload file
