@@ -27,6 +27,18 @@ https://www.plesk.com/blog/various/find-files-in-linux-via-command-line/
 
 https://stackoverflow.com/questions/48447550/how-can-i-send-a-binary-data-blob-using-fetch-and-formdata
 
+
+## JavaScript
+
+https://stackoverflow.com/questions/12845096/how-do-i-get-the-day-of-the-month-in-javascript
+
+https://bobbyhadz.com/blog/javascript-get-hours-and-minutes-from-date
+
+https://www.w3schools.com/jsref/jsref_getmilliseconds.asp
+
+
+
+
 ## Fetch
 
 https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
@@ -79,9 +91,7 @@ https://www.folkstalk.com/tech/java-create-directory-if-not-exists-with-code-exa
 https://spring.io/guides/gs/uploading-files/
 https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/file-upload-Spring-Boot-Ajax-example
 
-
 https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot
-
 
 https://zetcode.com/springboot/static/
 

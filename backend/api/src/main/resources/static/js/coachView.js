@@ -1,4 +1,5 @@
 var view = this;
+var _this  = this;
 
 /**
  * 
@@ -11,18 +12,6 @@ function getSimpleFile(fileElementId) {
     return file;
 }
 
-/**
- * 
- * @param {*} fileElementId 
- * @param {*} appendedFileName 
- * @returns 
- */
-function getFormData(fileElementId, appendedFileName) {
-    const userFile = getSimpleFile(fileElementId);
-    const formData = new FormData();
-    formData.append(appendedFileName, userFile, userFile.name);
-    return formData;
-}
 
 /**
  * 
@@ -60,19 +49,17 @@ async function getChuncksFromBase64(file, chunkSize) {
 }
 
 
-async function clickToUploadInChunks( writeBase64ContentService, concatenatedNames  ) {
+async function clickToUploadInChunks( writeBase64ContentService, fileNameArray, chunkSize, chunkFileName ) {
 
     try {
         const userFile = getSimpleFile('userFile');
-        const chunkArray = await getChuncksFromBase64(userFile, 250000);        
+        const chunkArray = await getChuncksFromBase64(userFile, chunkSize );        
         console.log(`size is ${chunkArray.length}`);
-        console.table(chunkArray);
-        const fileNameArray = [];
-               
+        console.table(chunkArray);               
 
         const uploadPromiseArray = chunkArray.map( (stringBase64, index) => {
                             
-            const fileName = `demoFileBase64Chunk_${index}.txt`;
+            const fileName = `${chunkFileName}_${index}.txt`;
             fileNameArray.push(fileName);
             const body = JSON.stringify({ "base64Content": stringBase64,  "fileName": fileName });
                                     
@@ -82,39 +69,27 @@ async function clickToUploadInChunks( writeBase64ContentService, concatenatedNam
                     load: response => resolve(response.isCreated),
                     error: error =>  reject(error)
                 });
-            });
-            
+            });            
         });       
         
         console.log( uploadPromiseArray );
-        console.log("### -> allSettled ")
-                
+        console.log("### -> allSettled ");                
 
         const size = await Promise.allSettled( uploadPromiseArray )
         .then( values => {        
             const promiseLength = values.length;
             console.log(`promise Size is ${promiseLength}`  );                
-            console.table(values);
-            
+            console.table(values);            
             const rejectedArray = values.filter( current =>  current.status === "rejected"  );
             console.log(`rejected length is ${rejectedArray.length}`);
-
-            console.log( "concatenatedNames value then " + concatenatedNames);
-            //concatenatedNames.set("value", fileNameArray.join(",") );
-            //console.log( "concatenatedNames value now" + concatenatedNames.get('value') );
-            
             console.log("done");
-
             return rejectedArray.length;
         });
 
         console.log(`size is ${size}`);
         if( size > 0 ){
             return false;
-        }
-
-        concatenatedNames.set("value", fileNameArray.join(",") );
-        console.log( "concatenatedNames value now" + concatenatedNames.get('value') );
+        }       
 
         return true;
         
@@ -124,34 +99,74 @@ async function clickToUploadInChunks( writeBase64ContentService, concatenatedNam
 }
 
 
+async function invokeJoinChuncks (concatenatedNames, joinChunksService, joinedFileName ) {   
+    
+    console.log( `concatenatedNames for JSON ${concatenatedNames}` );
+
+    var input = JSON.stringify( {"fileName": joinedFileName, "concatenatedNames": concatenatedNames} );  
+
+    var joinPromise = new Promise( (resolve, reject)=>{
+        joinChunksService({
+            params : input,
+            load: response => resolve(response.result),
+            error: e => reject(e)
+        });
+    });
+
+
+    try {
+        var result = await joinPromise;   
+        console.log('result is ' + result );     
+        return result;
+    }catch (error){
+        return false;
+    }
+}
+
+
+function getFormatedDate() {
+    var now  =  new Date();   
+    
+    var year    =  now.getFullYear(); 
+    var month   =  now.getMonth() + 1;
+    var day     =  now.getDate();    
+    var hour   =  String( now.getHours() ).padStart(2, '0');   
+    var minutes =  String( now.getMinutes() ).padStart(2, '0');    
+    var seconds =  String( now.getSeconds() ).padStart(2, '0');
+    var milisecs = String( now.getMilliseconds() ).padStart(3, '0');
+
+    return "" + year + month + day + hour + minutes + seconds + milisecs;
+
+}
 
 
 this.uploadDocument = async function(){
     console.log("#######################################");
     var writeBase64ContentService = this.context.options.writeBase64ContentService;
-    var concatenatedNames = this.context.options.concatenatedNames;
-    
-    const areChucksUploaded =await clickToUploadInChunks( writeBase64ContentService, concatenatedNames );  
-    console.log(`are chunks uploaded ${areChucksUploaded}`);
+    var fileNameArray = [];    
+    var chunkSize = this.context.options.chunkSize.get("value");
+    var applicationId = this.context.options.applicationId.get("value");
+    var processId = this.context.options.processId.get("value");    
+
+    var chunkFileName =  getFormatedDate() + "_chunk_" +  applicationId + "_" + processId;    
+     
+    //start loader
+
+    const areChucksUploaded = await clickToUploadInChunks( writeBase64ContentService, fileNameArray, chunkSize, chunkFileName );  
+    console.log(`are chunks uploaded ${areChucksUploaded}` );
+
+    if( areChucksUploaded ){        
+        var concatenatedNames = fileNameArray.join(",");
+        var joinChunksService = this.context.options.joinChunksService; 
+        var joinedFileName =  "Joined_" + chunkFileName + "_File.txt";
+
+        var areJoined = await invokeJoinChuncks( concatenatedNames, joinChunksService, joinedFileName );
+        console.log(`===== areJoined: ${areJoined}`)
+    }else{
+        //end the loader
+        //send the error alert
+    }
+
     console.log("----------------------------------------");
 
 }
-
-
-this.invokeJoinChunck = function(){
-    var concatenatedNames = this.context.options.concatenatedNames.get("value");
-    var input = JSON.stringify( {"fileName": "JoinedDemoCunkFile.txt", "concatenatedNames": concatenatedNames} );
-    var serviceArgs = {
-        params : input,
-        load: function (response){
-            console.log( response );
-            console.log( response.result );          
-            alert("Chunks are joined");
-        },
-        error: function(e){
-            console.error();
-        }
-    }   
-    this.context.options.joinChunksService(serviceArgs);
-}
-
