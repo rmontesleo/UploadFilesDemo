@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -102,6 +104,46 @@ public class FileBuilder {
     }
 
 
+
+    private static List<String> buildFileNameList( final String baseName, final int targetIndex){
+        List<String> fileNameList = new ArrayList<>();
+        for( int index = 0; index < targetIndex; index++ ){
+            fileNameList.add(  baseName.concat("_").concat( index + "" )    );
+        }
+        return fileNameList;
+    }
+
+    public static boolean deleteFiles(  final String path, final List<String> fileNameList ){
+        boolean result = true;
+
+        for (String currentFile : fileNameList) {
+
+            String fileName =  path.concat( currentFile );
+            try {
+                Files.delete(Paths.get(fileName));
+            } catch (IOException e) {
+                e.printStackTrace();
+                result = false;
+            }    
+        }
+
+        return result;
+    }
+
+
+
+    public static boolean joinChunksByIndexInFile(final String path, final String fileName,  final String baseName ,final int targetIndex ) {
+        List<String> fileNameList = buildFileNameList( baseName,  targetIndex);        
+        boolean result = joinChunksInFile( path, fileName, fileNameList );
+
+        boolean deletedFiles = deleteFiles(  path,  fileNameList );
+        
+
+        return result;
+    }
+
+
+
     /**
      * 
      * @param path
@@ -110,6 +152,7 @@ public class FileBuilder {
      * @return
      */
     public static boolean changeBase64ToBytesFile( final String path, final String base64FileName, final String bytesFileName){
+        
         String base64File = path.concat(base64FileName);
         
         StringBuilder lines = new StringBuilder();
@@ -130,10 +173,6 @@ public class FileBuilder {
                                        bytesFileName,  
                                        byteArray
                                      );
-    }
-
-
-
-  
+    }  
 
 }
