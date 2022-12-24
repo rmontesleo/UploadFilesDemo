@@ -7,9 +7,6 @@ temp
 
 .env
 
-*.jar
-*.class
-*.txt
 
 
 HELP.md

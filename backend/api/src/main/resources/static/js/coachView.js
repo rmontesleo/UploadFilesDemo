@@ -17,6 +17,7 @@ function getSimpleFile(fileElementId) {
  * 
  * @param {*} file 
  * @returns 
+
  */
 async function getBase64FromFile(file) {
     return new Promise((resolve, reject) => {
@@ -38,6 +39,7 @@ async function getBase64FromFile(file) {
  * @param {*} file 
  * @param {*} chunkSize 
  * @returns 
+
  */
 async function getChuncksFromBase64(file, chunkSize) {
     try {
@@ -47,6 +49,7 @@ async function getChuncksFromBase64(file, chunkSize) {
         console.error(error);
     }
 }
+
 
 
 async function clickToUploadInChunks( writeBase64ContentService, fileNameArray, chunkSize, chunkFileName ) {
@@ -98,12 +101,10 @@ async function clickToUploadInChunks( writeBase64ContentService, fileNameArray, 
     }
 }
 
+ 
+async function invokeJoinChuncks( chunkFileName, arraySize, joinChunksService, joinedFileName ) {
 
-async function invokeJoinChuncks (concatenatedNames, joinChunksService, joinedFileName ) {   
-    
-    console.log( `concatenatedNames for JSON ${concatenatedNames}` );
-
-    var input = JSON.stringify( {"fileName": joinedFileName, "concatenatedNames": concatenatedNames} );  
+    var input = JSON.stringify( {"joinedFileName": joinedFileName, "chunckFileName": chunkFileName, "arraySize": arraySize } );  
 
     var joinPromise = new Promise( (resolve, reject)=>{
         joinChunksService({
@@ -121,6 +122,30 @@ async function invokeJoinChuncks (concatenatedNames, joinChunksService, joinedFi
     }catch (error){
         return false;
     }
+}
+
+
+async function sendFileToBPEL ( invokeBpelService ,joinedFileName ){
+
+    var input = JSON.stringify( {"joinedFileName": joinedFileName } );  
+
+    var invokePromise = new Promise( (resolve, reject)=>{
+        invokeBpelService({
+            params : input,
+            load: response => resolve(response.result),
+            error: e => reject(e)
+        });
+    });
+
+
+    try {
+        var result = await invokePromise;   
+        console.log('result is ' + result );     
+        return result;
+    }catch (error){
+        return false;
+    }
+
 }
 
 
@@ -156,15 +181,39 @@ this.uploadDocument = async function(){
     console.log(`are chunks uploaded ${areChucksUploaded}` );
 
     if( areChucksUploaded ){        
-        var concatenatedNames = fileNameArray.join(",");
+       
+        var arraySize = fileNameArray.length; 
         var joinChunksService = this.context.options.joinChunksService; 
         var joinedFileName =  "Joined_" + chunkFileName + "_File.txt";
+        var areJoined = await invokeJoinChuncks( chunkFileName,arraySize, joinChunksService, joinedFileName );
+        
+        console.log(`===== areJoined: ${areJoined}`);
 
-        var areJoined = await invokeJoinChuncks( concatenatedNames, joinChunksService, joinedFileName );
-        console.log(`===== areJoined: ${areJoined}`)
+        if( areJoined ){             
+             //this.ui.get("successAlert").show();
+             console.log('Invoke bpel service...')
+              var invokeBpelService = this.context.options.invokeBpelService; 
+              var isSaved = await sendFileToBPEL(invokeBpelService ,joinedFileName );
+
+              console.log(`isSaved : ${isSaved}`);
+
+              if ( isSaved ){
+                  console.log("Doc is saved...");  
+                  alert('File was saved');
+              } else {
+
+              } 
+
+        }else {
+            console.log('chuncks can not be joined');
+
+
+            //end loader
+            // send the error alert , join can not be done
+        }
     }else{
         //end the loader
-        //send the error alert
+        //send the error alert chuncks can not be uploaded
     }
 
     console.log("----------------------------------------");

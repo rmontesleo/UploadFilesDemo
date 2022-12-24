@@ -30,6 +30,7 @@ async function sendData (   url,
 function getSimpleFile(fileElementId) {
     const file = document.getElementById(fileElementId).files[0];  
     console.log(`the file is  ${file}` );
+    console.log(`the name is  ${file.name}` );
     return file;
 }
 
