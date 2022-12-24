@@ -48,6 +48,8 @@ https://stackoverflow.com/questions/8675688/send-content-type-application-json-p
 ## Promises
 https://stackoverflow.com/questions/36280818/how-to-convert-file-to-base64-in-javascript
 
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
 
 ## Chunks
 
@@ -56,6 +58,7 @@ https://onlinebase64tools.com/split-base64-into-chunks
 https://www.codegrepper.com/code-examples/javascript/how+to+chunk+a+base+64+in+javascript
 
 https://stackoverflow.com/questions/7033639/split-large-string-in-n-size-chunks-in-javascript
+
 https://stackoverflow.com/questions/9638361/how-can-i-pass-a-parameter-to-a-function-without-it-running-right-away
 
 ## Java File
@@ -68,6 +71,7 @@ https://mkyong.com/java8/java-8-stream-iterate-examples/
 https://mkyong.com/java/how-do-convert-string-to-byte-in-java/
 https://mkyong.com/maven/how-to-create-a-java-project-with-maven/
 https://mkyong.com/java/how-to-create-directory-in-java/
+https://mkyong.com/java/how-to-delete-file-in-java/
 
 
 https://www.baeldung.com/java-base64-image-string
