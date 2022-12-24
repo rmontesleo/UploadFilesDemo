@@ -134,8 +134,8 @@ public class FileBuilder {
 
         for (String currentFile : fileNameList) {            
             result = deleteSingleFile(path, currentFile);
-            if( !result ){
-                break;
+            if( deleteSingleFile(path, currentFile) == false ){
+                result = false;
             }
         }
 
