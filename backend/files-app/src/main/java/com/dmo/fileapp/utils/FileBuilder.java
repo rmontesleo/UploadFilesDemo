@@ -22,11 +22,12 @@ public class FileBuilder {
      * @param base64Content
      * @return
      */
-    public static boolean buildFileFromBase64Content( final String path, final String fileName, final String base64Content) {
+    public static boolean buildFileFromBase64Content(final String path, final String fileName,
+            final String base64Content) {
         String file = path.concat(fileName);
-        try ( FileWriter writer = new FileWriter(file);
-                BufferedWriter buffer = new BufferedWriter(writer) ) {
-            buffer.write(base64Content);                       
+        try (FileWriter writer = new FileWriter(file);
+                BufferedWriter buffer = new BufferedWriter(writer)) {
+            buffer.write(base64Content);
             return true;
         } catch (IOException e) {
             return false;
@@ -49,8 +50,6 @@ public class FileBuilder {
             return false;
         }
     }
-  
-
 
     /**
      * 
@@ -59,7 +58,7 @@ public class FileBuilder {
      * @param fileNameList
      * @return
      */
-    public static boolean joinChunksInFile(final String path, final String fileName, final List<String> fileNameList ) {
+    public static boolean joinChunksInFile(final String path, final String fileName, final List<String> fileNameList) {
 
         List<String> lines = new ArrayList<>();
         String currentFile = null;
@@ -67,24 +66,23 @@ public class FileBuilder {
 
         for (String currentName : fileNameList) {
             currentFile = path.concat(currentName);
-            try (BufferedReader br = new BufferedReader(new FileReader(currentFile))) {                
+            try (BufferedReader br = new BufferedReader(new FileReader(currentFile))) {
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
                 }
             } catch (IOException ex) {
                 break;
             }
-        }        
+        }
 
         if (fileNameList.size() != lines.size()) {
             return false;
         }
 
-        return buildFileFromBase64Content( path, fileName, String.join("", lines) );
+        return buildFileFromBase64Content(path, fileName, String.join("", lines));
 
     }
 
-    
     /**
      * 
      * @param path
@@ -92,57 +90,87 @@ public class FileBuilder {
      * @param fileNameArray
      * @return
      */
-    public static boolean joinChunksArrayInFile(final String path, final String fileName, final String[] fileNameArray ) {
+    public static boolean joinChunksArrayInFile(final String path, final String fileName,
+            final String[] fileNameArray) {
         List<String> fileNameList = Arrays.asList(fileNameArray);
-        return joinChunksInFile( path,  fileName, fileNameList );
+        return joinChunksInFile(path, fileName, fileNameList);
     }
 
-
-    public static boolean joinChunksStringInFile(final String path, final String fileName, final String concatenatedNames ) {
-        List<String> fileNameList =  Arrays.asList( concatenatedNames.split(",") );
-        return joinChunksInFile( path,  fileName, fileNameList );
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param concatenatedNames
+     * @return
+     */
+    public static boolean joinChunksStringInFile(final String path, final String fileName,
+            final String concatenatedNames) {
+        List<String> fileNameList = Arrays.asList(concatenatedNames.split(","));
+        return joinChunksInFile(path, fileName, fileNameList);
     }
 
-
-
-    private static List<String> buildFileNameList( final String baseName, final int targetIndex){
+    /**
+     * 
+     * @param baseName
+     * @param targetIndex
+     * @return
+     */
+    private static List<String> buildFileNameList(final String baseName, final int targetIndex, String extention) {
         List<String> fileNameList = new ArrayList<>();
-        for( int index = 0; index < targetIndex; index++ ){
-            fileNameList.add(  baseName.concat("_").concat( index + "" )    );
+        for (int index = 0; index < targetIndex; index++) {
+            fileNameList.add(baseName.concat("_").concat(index + "").concat(extention));
         }
         return fileNameList;
     }
 
-    public static boolean deleteFiles(  final String path, final List<String> fileNameList ){
+    /**
+     * 
+     * @param path
+     * @param fileNameList
+     * @return
+     */
+    public static boolean deleteFiles(final String path, final List<String> fileNameList) {
         boolean result = true;
 
-        for (String currentFile : fileNameList) {
-
-            String fileName =  path.concat( currentFile );
-            try {
-                Files.delete(Paths.get(fileName));
-            } catch (IOException e) {
-                e.printStackTrace();
-                result = false;
-            }    
+        for (String currentFile : fileNameList) {            
+            result = deleteSingleFile(path, currentFile);
+            if( !result ){
+                break;
+            }
         }
 
         return result;
     }
 
+    public static boolean deleteSingleFile(final String path, String fileToDelete) {
+        boolean result = true;
 
-
-    public static boolean joinChunksByIndexInFile(final String path, final String fileName,  final String baseName ,final int targetIndex ) {
-        List<String> fileNameList = buildFileNameList( baseName,  targetIndex);        
-        boolean result = joinChunksInFile( path, fileName, fileNameList );
-
-        boolean deletedFiles = deleteFiles(  path,  fileNameList );
-        
+        String fileName = path.concat(fileToDelete);
+        try {
+            Files.delete(Paths.get(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            result = false;
+        }
 
         return result;
     }
 
-
+    /**
+     * 
+     * @param path
+     * @param fileName
+     * @param baseName
+     * @param targetIndex
+     * @return
+     */
+    public static boolean joinChunksByIndexInFile(final String path, final String fileName, final String baseName,
+            final int targetIndex) {
+        List<String> fileNameList = buildFileNameList(baseName, targetIndex, ".txt");
+        boolean result = joinChunksInFile(path, fileName, fileNameList);
+        boolean deletedFiles = deleteFiles(path, fileNameList);
+        return result;
+    }
 
     /**
      * 
@@ -151,28 +179,27 @@ public class FileBuilder {
      * @param bytesFileName
      * @return
      */
-    public static boolean changeBase64ToBytesFile( final String path, final String base64FileName, final String bytesFileName){
-        
+    public static boolean changeBase64ToBytesFile(final String path, final String base64FileName,
+            final String bytesFileName) {
+
         String base64File = path.concat(base64FileName);
-        
+
         StringBuilder lines = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(base64File))){
+        try (BufferedReader br = new BufferedReader(new FileReader(base64File))) {
             String currentLine;
-            while( (currentLine = br.readLine()) != null ){
+            while ((currentLine = br.readLine()) != null) {
                 lines.append(currentLine);
             }
-        }catch(IOException ex){
+        } catch (IOException ex) {
             return false;
         }
 
         String encodedString = lines.toString();
         byte[] byteArray = Base64.getDecoder().decode(encodedString);
 
-
-        return buildFileFromByteArray( path, 
-                                       bytesFileName,  
-                                       byteArray
-                                     );
-    }  
+        return buildFileFromByteArray(path,
+                bytesFileName,
+                byteArray);
+    }
 
 }
